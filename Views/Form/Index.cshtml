@@ -1,0 +1,35 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width" />
+ 
+
+    <title>Index</title>
+</head>
+<body>
+    <div> 
+        <section>
+            @using (Html.BeginForm("Create", "Form"))
+            {
+                @Html.ValidationSummary(true)
+                <h3>First Name :</h3> <input type="text" name="Fname" /><br />
+                <h3>Last Name :</h3> <input type="text" name="Lname" /><br />
+                <h3>Email id :</h3> <input type="text" name="email" /><br />
+                <h3>GID :</h3> <input type="text" name="gid" /><br />
+                <h3>Last working date :</h3> <input type="date" name="date" /><br />
+
+                <br />
+                <input type="submit" value="SUBMIT" />
+
+            }
+        </section>
+    </div>
+</body>
+</html>
