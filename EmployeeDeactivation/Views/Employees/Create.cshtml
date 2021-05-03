@@ -1,0 +1,68 @@
+﻿@model EmployeeDeactivation.Models.Employee
+
+
+
+<br />
+<div class="row">
+    <div class="col-md-4">
+        
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Firstname" class="control-label"></label>
+                <input asp-for="Firstname" class="form-control" />
+                <span asp-validation-for="Firstname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Lastname" class="control-label"></label>
+                <input asp-for="Lastname" class="form-control" />
+                <span asp-validation-for="Lastname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="gId" class="control-label"></label>
+                <input asp-for="gId" class="form-control" />
+                <span asp-validation-for="gId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="date" class="control-label"></label>
+                <input asp-for="date" class="form-control" />
+                <span asp-validation-for="date" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" style="padding-left:6px">
+                <label>
+                    Select Team :
+                </label>
+            </div>
+            <div class="form-group">
+                <select id="serviceGroupNames" class="form-control Teams" style="width:71%"></select>
+             </div>
+
+
+            <div class="form-group">
+                <br />
+                <input type="submit" value="Submit" class="btn btn-default" />
+
+            </div>
+            @*@if (ViewBag.Message != null)
+            {
+                <script type="text/javascript">
+                window.onload = function () {
+                    alert("@ViewBag.Message");
+                };
+
+                </script>}*@
+        </form>
+       
+    </div>
+</div>
+
+
+
+
+
