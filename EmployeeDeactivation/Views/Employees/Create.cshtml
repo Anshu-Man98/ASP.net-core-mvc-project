@@ -1,0 +1,165 @@
+﻿@model EmployeeDeactivation.Models.Employee
+<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetTargetSystem();
+        $('#sponsorFName').hide();
+        $('#sponsorLName').hide();
+        $('#sponsorEmail').hide();
+        $('#sponsorDepartment').hide();
+    });
+
+    function GetTargetSystem() {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetData","Employees")',
+            dataType: "json",
+            success: function (response) {
+                $('#teamNames').append(
+                    $('<option selected disabled hidden></option>').val('').html('Choose Here')
+                );
+                $.each(response, function (i, item) {
+                    $('#teamNames').append($('<option>', {
+                        value: item.teamName,
+                        text: item.teamName
+                    }));
+
+                });
+            }
+        })
+
+        $("#teamNames").change(function () { check(); }
+        );
+        function check() {
+
+            var teamName = $('#teamNames').val();
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetData","Employees")',
+                dataType: "json",
+                success: function (response) {
+
+                    $.each(response, function (i, item) {
+                        if (item.teamName == teamName) {
+                            var sponsorFN=item.sponsorFirstName;
+                            $('#sponsorFName').val(sponsorFN);
+                            $('#sponsorFName').show();
+                            var sponsorLN = item.sponsorLastName;
+                            $('#sponsorLName').val(sponsorLN);
+                            $('#sponsorLName').show();
+                            var sponsorEId = item.sponsorEmailD;
+                            $('#sponsorEmail').val(sponsorEId);
+                            $('#sponsorEmail').show();
+                            var sponsorD = item.department;
+                            $('#sponsorDepartment').val(sponsorD);
+                            $('#sponsorDepartment').show();
+                        }
+                    });
+                }
+            })
+        }
+    }
+
+</script>
+
+<body>
+    <br />
+    <div class="row">
+        <div class="col-md-4">
+
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Firstname" class="control-label"></label>
+                    <input asp-for="Firstname" class="form-control" />
+                    <span asp-validation-for="Firstname" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Lastname" class="control-label"></label>
+                    <input asp-for="Lastname" class="form-control" />
+                    <span asp-validation-for="Lastname" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GId" class="control-label"></label>
+                    <input asp-for="GId" class="form-control" />
+                    <span asp-validation-for="GId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Date" class="control-label"></label>
+                    <input asp-for="Date" class="form-control" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" style="padding-left:1px">
+                    <label>
+                        Select Team :
+                    </label>
+                </div>
+                <div class="form-group">
+                    <select id="teamNames" class="form-control" style="width:71%"></select>
+                </div>
+
+                <div class="form-group" style="padding-left:1px">
+                    <label>
+                        Sponsor FirstName:
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="sponsorFName" readonly/>
+                </div>
+
+                <div class="form-group" style="padding-left:1px">
+                    <label>
+                        Sponsor LastName:
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="sponsorLName" readonly/>
+                </div>
+
+                <div class="form-group" style="padding-left:1px">
+                    <label>
+                        Sponsor Email:
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="sponsorEmail" style="width:71%" readonly/>
+                </div>
+
+                <div class="form-group" style="padding-left:1px">
+                    <label>
+                        Sponsor Department:
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="sponsorDepartment" style="width:71%" readonly/>
+                </div>
+
+                <div class="form-group">
+                    <br />
+                    <input type="submit" value="Submit" class="btn btn-default" />
+                </div>
+
+                @if (ViewBag.Message != null)
+                {
+                 <script type="text/javascript">
+                 window.onload = function () {
+                 alert("@ViewBag.Message");
+                 };
+                 </script>}
+            
+</form>
+
+        </div>
+    </div>
+
+</body>
+
+
+
+
