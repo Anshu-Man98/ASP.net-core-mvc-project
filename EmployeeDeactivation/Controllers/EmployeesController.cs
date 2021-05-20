@@ -16,24 +16,29 @@ using Syncfusion.Pdf;
 using Syncfusion.Pdf.Graphics;
 using Syncfusion.Drawing;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using System.Web;
+using System.Net;
 
 namespace EmployeeDeactivation.Controllers
 {
+    [Authorize]
     public class EmployeesController : Controller
     {
-        private readonly IEmployeeDataOperations _employeeDataOperation;
+        private readonly IEmployeeDataOperation _employeeDataOperation;
 
-        public EmployeesController(IEmployeeDataOperations employeeDataOperation)
+        public EmployeesController(IEmployeeDataOperation employeeDataOperation)
         {
             _employeeDataOperation = employeeDataOperation;
         }
-
+        [AllowAnonymous]
         [HttpGet]
-        public IActionResult Pdf()
+        public IActionResult ActivationPage()
         {
             return View();
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult Create()
         {
@@ -41,20 +46,19 @@ namespace EmployeeDeactivation.Controllers
         }
 
 
-
         [HttpGet]
         [Route("Employees/GetSponsorDetails")]
         public JsonResult GetSponsorDetails()
         {
-            return Json(_employeeDataOperation.RetrieveEmployeeData());    
+            return Json(_employeeDataOperation.RetrieveAllSponsorDetails());    
         }
 
 
         [HttpPost]
         [Route("Employees/AddDetails")]
-        public JsonResult AddDetails(string firstName, string lastName, string gId, string email, DateTime lastWorkingDate)
+        public JsonResult AddDetails(string firstName, string lastName, string gId, string email, DateTime lastWorkingDate, string teamsName, string sponsorName, string sponsorEmailId, string sponsorDepartment)
         {
-            var updateStatus =  _employeeDataOperation.AddEmployeeData(firstName, lastName, gId, email, lastWorkingDate);
+            var updateStatus =  _employeeDataOperation.AddEmployeeData(firstName, lastName, gId, email, lastWorkingDate, teamsName, sponsorName, sponsorEmailId, sponsorDepartment);
 
                return Json(true); 
         }
