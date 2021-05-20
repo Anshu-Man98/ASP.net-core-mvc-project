@@ -1,11 +1,14 @@
-﻿@model EmployeeDeactivation.Models.DeactivatedEmployeeDetails
+@model EmployeeDeactivation.Models.DeactivatedEmployeeDetails
 @using System.Security.Principal
 @using System.Security.Claims
 @if (User.Identity.IsAuthenticated)
 {
     var identity = User.Identity as ClaimsIdentity;
-    string preferred_username = identity.Claims.FirstOrDefault(c => c.Type == "preferred_username")?.Value;
-
+    string emailId = identity.Claims.FirstOrDefault(c => c.Type == "preferred_username")?.Value;
+    string UserName = (User.Identities.FirstOrDefault().Claims.Where(c => c.Type.Equals("name")).FirstOrDefault().Value);
+    var split= UserName.Split(" ");
+    var firstName=split[0];
+    var lastName=split[1];
 <head>
 
     
@@ -24,9 +27,6 @@
         $(document).ready(function () {
             GetTeamNames();
             $('#sponsorDetails').hide();
-
-
-
         });
         var x = setInterval(Reminder, 86400000);
         function Reminder() {
@@ -300,7 +300,6 @@
 
     <h2 class="header">Employee Deactivation Form </h2>
     <br />
-    <h5 id="hello">Hello @preferred_username!</h5>
 
     <div class="regular-field">
 
@@ -319,7 +318,7 @@
                     First Name:
                 </label>
                 <div class="col-sm-3" id="inputTextbox">
-                    <input type="text" class="form-control" id="employeeFirstName" onkeyup="ValidateFirstName()" placeholder="First Name" />
+                    <input type="text"  value=@firstName class="form-control" id="employeeFirstName" onkeyup="ValidateFirstName()" placeholder="First Name" />
                 </div>
             </div>
             <div class="form-group row">
@@ -331,7 +330,7 @@
                     Last Name:
                 </label>
                 <div class="col-sm-3" id="inputTextbox">
-                    <input type="text" class="form-control" id="employeeLastName" onkeyup="ValidateLastName()" placeholder="Last Name" />
+                    <input type="text" value =@lastName class="form-control" id="employeeLastName" onkeyup="ValidateLastName()" placeholder="Last Name" />
                 </div>
             </div>
             <div class="form-group row">
@@ -352,7 +351,7 @@
                     Email:
                 </label>
                 <div class="col-sm-3" id="inputTextbox">
-                    <input type="text" class="form-control" id="employeeEmail" placeholder="Email" onkeyup="ValidateEmail()" />
+                    <input type="text" value =@emailId class="form-control" id="employeeEmail" placeholder="Email" onkeyup="ValidateEmail()" />
                 </div>
             </div>
             <div class="form-group row">
