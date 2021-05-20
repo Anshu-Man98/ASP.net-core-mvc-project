@@ -37,12 +37,20 @@ namespace EmployeeDeactivation.Controllers
         {
             return View();
         }
-
         [Authorize]
         [HttpGet]
         public IActionResult Create()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+               var userName = GetUserName(User);
+            }
             return View();
+
+        }
+        public static string GetUserName(ClaimsPrincipal User)
+        {
+            return (User.Identities.FirstOrDefault().Claims.Where(c => c.Type.Equals("name")).FirstOrDefault().Value);
         }
 
 
