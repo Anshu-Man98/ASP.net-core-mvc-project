@@ -1,0 +1,293 @@
+﻿@model EmployeeDeactivation.Models.DeactivatedEmployeeDetails
+@using System.Security.Principal
+@using System.Security.Claims
+
+<head>
+
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.8.0.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.22/jquery-ui.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script src="~/js/bootbox.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("SponsorDetails", "Admin")',
+                dataType: "json",
+                success: function (response) {
+                    var row;
+                    $.each(response, function (i, item) {
+                        row += "<tbody><tr><td>" + item.teamName + "</td><td>" + item.sponsorFirstName + " " + item.sponsorLastName + "</td><td>" + item.sponsorGID + "</td><td>" + item.sponsorEmailID + "</td><td>" + item.department + "</td><td>" + item.reportingManagerEmail + "</td><td><span id=edit class='glyphicon glyphicon-pencil cursor' style='font-size:30px;color:blue'></span><span id=delete class='glyphicon glyphicon-remove cursor' style='font-size:30px;color:red'></span></td></tr></tbody>"
+                        
+                    });
+                    $("#tbldata").append(row);
+                   
+                }
+            })
+        });
+
+
+
+        $(document).on("click", "#delete", function (e) {
+            bootbox.confirm({
+                size: "small",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                    },
+                    cancel: {
+                        label: 'No',  
+                    }
+                },
+                message: "Are you sure you want to delete this?",
+                callback: function (result) {}
+            })
+        
+        });
+
+        $(document).on("click", "#edit", function (e) {
+            openForm1();
+        });
+
+        $(document).on("click", "#addButton", function (e) {
+            openForm();
+            $(document).on("click", "#submit1", function (e) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddSponsorDetails", "Admin")',
+                    dataType: "json",
+                    data: { 'teamName': $('#teamName').val(), 'sponsorFirstName': $('#sponsorFirstName').val(), 'sponsorLastName': $('#sponsorLastName').val(), 'sGid': $('#sponsorGid').val(), 'sponsorEmail': $('#sponsorEmail').val(), 'sDepartment': $('#sponsorDepartment').val(), 'rmEmail': $('#reportingManEmail').val() },
+                    success: function (response) {
+                        alert("Sponsor Details Have been added Sucessfully!");
+                    }
+                });
+            });
+        });
+
+        function openForm1() {
+            document.getElementById("myForm1").style.display = "block";
+        }
+        function closeForm1() {
+            document.getElementById("myForm1").style.display = "none";
+        }
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == myForm) {
+                document.getElementById("myForm").style.display = "none";
+            }
+           
+        }
+    </script>
+    <style>
+        .tablee{
+            padding-left:50px;
+            padding-right:50px;
+            margin-top:100px;
+        }
+        .header {
+            margin-top: 0px;
+            padding: 20px;
+            margin-bottom: 5px;
+            text-align: center;
+            background-color: black;
+            color: white;
+            font-size: 30px;
+        }
+        #edit{
+            color:green;
+        }
+        #delete{
+            color:red;
+        }
+        #addButton {
+            background-color: #00a550;
+            width: 400px;
+            margin-left: 50px;
+            font-weight:bold;
+            color:white;
+        }
+        #addButton:hover {
+            background-color: green;
+        }
+
+        /* The popup form - hidden by default */
+        .form-popup {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            z-index:1;
+            top: 4%;
+            left: 0;
+            width:100%;
+            height:100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        /* Add styles to the form container */
+        .form-container {
+            max-width: 500px;
+            padding: 10px;
+            background-color: white;
+            border: 5px solid #ecebe4;
+            margin: auto;
+        }
+
+            /* Full-width input fields */
+            .form-container input[type=text], .form-container input[type=password], .form-container input[type=email] {
+                width: 100%;
+                padding: 3px;
+                margin: 2px 0 4px 0;
+                border: none;
+                background: #f1f1f1;
+            }
+           
+
+                /* When the inputs get focus, do something */
+                .form-container input[type=text]:focus, .form-container input[type=password]:focus, .form-container input[type=email]:focus {
+                    background-color: #ddd;
+                    outline: none;
+                }
+               
+
+            /* Set a style for the submit/login button */
+            .form-container .btn {
+                background-color: #04AA6D;
+                color: white;
+                padding: 5px 8px;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+                margin-bottom: 10px;
+                opacity: 0.8;
+            }
+
+            /* Add a red background color to the cancel button */
+            .form-container .cancel {
+                background-color: red;
+            }
+
+            /* Add some hover effects to buttons */
+            .form-container .btn:hover, .open-button:hover {
+                opacity: 1;
+            }
+            h3{
+                font-weight:bold;
+            }
+
+    </style>
+</head >
+<body>
+    <div class="header">
+        <h2> Sponsor Details </h2>
+    </div>
+    <div class="tablee">
+
+        <table id="tbldata" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col"> Team</th>
+                    <th scope="col"> Sponsor Name</th>
+                    <th scope="col"> GID</th>
+                    <th scope="col"> Sponsor Email</th>
+                    <th scope="col"> Sponsor Department</th>
+                    <th scope="col"> Reporting Manager Email</th>
+                    <th scope="col"> Action</th>
+
+                </tr>
+            </thead>
+
+        </table>
+
+    </div>
+
+    <input type="button" value="ADD" class="btn btn-default"  id="addButton" />
+    <div id="pop1">
+        <div class="form-popup" id="myForm">
+            <form class="form-container">
+                <h3>Add Sponsor Details</h3>
+
+                <label for="Team"><b>Team Name</b></label>
+                <input type="text" placeholder="Team Name" id="teamName" name="team" required>
+
+                <label for="fisrtname"><b>Sponsor Fisrt Name</b></label>
+                <input type="text" placeholder="First Name" id="sponsorFirstName" name="fisrtname" required>
+
+                <label for="lastname"><b>Sponsor Last Name</b></label>
+                <input type="text" placeholder="Last Name" id="sponsorLastName" name="lastname" required>
+
+                <label for="gid"><b>Sponsor GID</b></label>
+                <input type="text" placeholder="GID" id="sponsorGid" name="gid" required>
+
+                <label for="email"><b>Sponsor Email Id</b></label>
+                <input type="email" placeholder="Email Id" id="sponsorEmail" name="email" required>
+
+                <label for="department"><b>Sponsor Department</b></label>
+                <input type="text" placeholder="Department" id="sponsorDepartment" name="department" required>
+
+                <label for="email"><b>Reporting Manager Email Id</b></label>
+                <input type="email" placeholder="Email Id" id="reportingManEmail" name="Rmemail" required>
+
+
+                <button type="submit" id="submit1" class="btn">Submit</button>
+                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+
+            </form>
+        </div>
+    </div>
+
+    <div id="pop2">
+        <div class="form-popup" id="myForm1">
+            <form class="form-container">
+                <h3>Edit Sponsor Details</h3>
+
+                <label for="Team"><b>Team Name</b></label>
+                <input type="text" placeholder="Team Name" name="team" >
+
+                <label for="fisrtname"><b>Sponsor Fisrt Name</b></label>
+                <input type="text" placeholder="First Name" name="fisrtname" >
+
+                <label for="lastname"><b>Sponsor Last Name</b></label>
+                <input type="text" placeholder="Last Name" name="lastname" >
+
+                <label for="gid"><b>Sponsor GID</b></label>
+                <input type="text" placeholder="GID" name="gid" >
+
+                <label for="email"><b>Sponsor Email Id</b></label>
+                <input type="email" placeholder="Email Id" name="email" >
+
+                <label for="department"><b>Sponsor Department</b></label>
+                <input type="text" placeholder="Department" name="department" >
+
+                <label for="email"><b>Reporting Manager Email Id</b></label>
+                <input type="email" placeholder="Email Id" name="Rmemail" >
+
+
+                <button type="submit" class="btn">Submit</button>
+                <button type="button" class="btn cancel" onclick="closeForm1()">Close</button>
+
+            </form>
+        </div>
+    </div>
+
+
+</body>
+
+
+
