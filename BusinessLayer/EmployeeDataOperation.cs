@@ -103,6 +103,44 @@ namespace EmployeeDeactivation.BusinessLayer
             return databaseUpdateStatus;
         }
 
+        public async Task<bool> AddActivationEmployeeData(string firstName, string lastName, string siemensEmailId, string siemensgId, string team, string sponsorName, string sponsorEmailId, string sponsordepartment, string sponsorGID, string reportingManagerEmailId, string employeeRole, string gender, DateTime dob, string pob, string address, string phoneNo, string nationality)
+        //review change make parameters as class
+        {
+            ActivationWorkflowModel employeeActivate = new ActivationWorkflowModel()
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                SiemensEmailId = siemensEmailId,
+                SiemensGID = siemensgId,
+                Team = team,
+                SponsorName = sponsorName,
+                SponsorEmail = sponsorEmailId,
+                SponsorGid= sponsorGID,
+                SponsorDepartment = sponsordepartment,
+                ReportingManagerEmail = reportingManagerEmailId,
+                Role= employeeRole,
+                Gender = gender,
+                DateOfBirth = dob,
+                PlaceofBirth = pob,
+                Address = address,
+                PhoneNo = phoneNo,
+                Nationality = nationality
+            };
+            var check = _context.ActivationWorkflow.ToList();
+            foreach (var i in check)
+            {
+                if (i.SiemensGID == siemensgId)
+                {
+                    _context.Remove(_context.ActivationWorkflow.Single(a => a.SiemensGID == siemensgId));
+                    _context.SaveChanges();
+                }
+            }
+
+            _context.Add(employeeActivate);
+            var databaseUpdateStatus = await _context.SaveChangesAsync() == 1 ? true : false;
+            return databaseUpdateStatus;
+        }
+
         public DeactivatedEmployeeDetails RetrieveEmployeeDataBasedOnGid(string gId)
         {
             var details = _context.Employees.ToList();
@@ -114,6 +152,20 @@ namespace EmployeeDeactivation.BusinessLayer
                 }
             }
             return new DeactivatedEmployeeDetails();
+
+        }
+
+        public ActivationWorkflowModel RetrieveActivationDataBasedOnGid(string gId)
+        {
+            var details = _context.ActivationWorkflow.ToList();
+            foreach (var item in details)
+            {
+                if (item.SiemensGID == gId)
+                {
+                    return item;
+                }
+            }
+            return new ActivationWorkflowModel();
 
         }
     }

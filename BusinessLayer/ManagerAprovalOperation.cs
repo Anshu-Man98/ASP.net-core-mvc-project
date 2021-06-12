@@ -43,8 +43,7 @@ namespace EmployeeDeactivation.BusinessLayer
             var infoo = _context.ManagerApprovalStatus.ToList();
             foreach (var item in infoo)
             {
-
-                deactivationDetails.Add(new ManagerApprovalStatus
+                    deactivationDetails.Add(new ManagerApprovalStatus
                 {
                     EmployeeName = item.EmployeeName,
                     LastworkingDate = item.LastworkingDate,
