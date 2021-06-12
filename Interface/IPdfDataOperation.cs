@@ -9,6 +9,7 @@ namespace EmployeeDeactivation.Interface
     {
         void SendPdfAsEmailAttachment(string memoryStream, string employeeName, string teamName);
         byte[] FillPdfForm(string GId);
+        byte[] FillActivationPdfForm(string GId);
         void SendReminderEmail();
         
     }

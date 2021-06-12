@@ -13,5 +13,6 @@ namespace EmployeeDeactivation.Interface
         Task<bool> DeleteSponsorData(string gId);
         List<DeactivatedEmployeeDetails> RetrieveEmployeeDetails();
         List<DeactivatedEmployeeDetails> Customers();
+        List<ActivationWorkflowModel> ActivationEmployeeData();
     }
 }

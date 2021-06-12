@@ -74,6 +74,15 @@ namespace EmployeeDeactivation.Controllers
                return Json(true); 
         }
 
-       
+        [HttpPost]
+        [Route("Employees/AddActivationDetails")]
+        public JsonResult AddActivationDetails(string firstName, string lastName, string siemensEmailId, string siemensgId, string team, string sponsorName, string sponsorEmailId, string sponsordepartment, string sponsorGID, string reportingManagerEmailId, string employeeRole, string gender, DateTime dob, string pob, string address, string phoneNo, string nationality)
+        {
+            var updateStatus = _employeeDataOperation.AddActivationEmployeeData(firstName, lastName, siemensEmailId, siemensgId, team, sponsorName, sponsorEmailId, sponsordepartment, sponsorGID, reportingManagerEmailId, employeeRole, gender, dob, pob, address, phoneNo, nationality);
+
+            return Json(true);
+        }
+
+
     }
 }

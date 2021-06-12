@@ -32,6 +32,14 @@ namespace EmployeeDeactivation.Controllers
            return Json("data:application/pdf;base64," + Convert.ToBase64String(bytes));
         }
 
+        [HttpGet]
+        [Route("Pdf/ActivationForm")]
+        public IActionResult ActivationForm(string GId)
+        {
+            var bytes = _pdfDataOperation.FillActivationPdfForm(GId);
+            return Json("data:application/pdf;base64," + Convert.ToBase64String(bytes));
+        }
+
 
         [HttpPost]
         [Route("Pdf/PdfAttachment")]

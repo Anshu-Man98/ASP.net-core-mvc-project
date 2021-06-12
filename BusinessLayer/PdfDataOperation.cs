@@ -50,6 +50,32 @@ namespace EmployeeDeactivation.BusinessLayer
             return bytes;
         }
 
+        public byte[] FillActivationPdfForm(string GId)
+        {
+            var activationEmployeeData = _employeeDataOperation.RetrieveActivationDataBasedOnGid(GId);
+            FileStream docStream = new FileStream("Activationpdf.pdf", FileMode.Open, FileAccess.Read);
+            PdfLoadedDocument loadedDocument = new PdfLoadedDocument(docStream);
+            PdfLoadedForm form = loadedDocument.Form;
+            //(form.Fields[8] as PdfLoadedTextBoxField).Text = activationEmployeeData.Gender;
+            (form.Fields[11] as PdfLoadedTextBoxField).Text = activationEmployeeData.FirstName;
+            (form.Fields[10] as PdfLoadedTextBoxField).Text = activationEmployeeData.LastName;
+            (form.Fields[12] as PdfLoadedTextBoxField).Text = activationEmployeeData.SiemensGID;
+            (form.Fields[13] as PdfLoadedTextBoxField).Text = activationEmployeeData.PlaceofBirth;
+            (form.Fields[9] as PdfLoadedTextBoxField).Text = activationEmployeeData.DateOfBirth.ToString();
+            string sponsorFullName = activationEmployeeData.SponsorName;
+            string[] splitsponsorFullName = sponsorFullName.Split(' ');
+            (form.Fields[16] as PdfLoadedTextBoxField).Text = splitsponsorFullName[0];
+            (form.Fields[17] as PdfLoadedTextBoxField).Text = splitsponsorFullName[1];
+            (form.Fields[18] as PdfLoadedTextBoxField).Text = activationEmployeeData.SponsorGid;
+            (form.Fields[19] as PdfLoadedTextBoxField).Text = activationEmployeeData.SponsorDepartment;
+            MemoryStream stream = new MemoryStream();
+            loadedDocument.Save(stream);
+            stream.Position = 0;
+            loadedDocument.Close(true);
+            byte[] bytes = stream.ToArray();
+            return bytes;
+        }
+
         public void SendPdfAsEmailAttachment(string memoryStream, string employeeName, string teamName)
         {
             var reportingManagerEmailId = _employeeDataOperation.GetReportingManagerEmailId(teamName);
@@ -87,7 +113,7 @@ namespace EmployeeDeactivation.BusinessLayer
                         {
                             MemoryStream stream = new MemoryStream(item.PdfAttachment);
                             Attachment file = new Attachment(stream, "Deactivation workflow_" + item.EmployeeName + ".pdf", "application/pdf");
-                            SendEmail(item.ReportingManagerEmail, item.EmployeeName, true, file);
+                            SendEmail(employee.SponsorEmailID, item.EmployeeName, true, file);
                         }
                     }
                 }

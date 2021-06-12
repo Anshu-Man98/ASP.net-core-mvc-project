@@ -26,6 +26,13 @@ namespace EmployeeDeactivation.Controllers
         {
             return View(_adminDataOperation.Customers());
         }
+        
+
+        public IActionResult AccountActivationDetailsPage()
+        {
+            return View(_adminDataOperation.ActivationEmployeeData());
+        }
+
 
         [HttpGet]
         [Route("Admin/SponsorDetails")]

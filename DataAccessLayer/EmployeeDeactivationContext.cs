@@ -16,5 +16,6 @@ namespace EmployeeDeactivation.Data
         public DbSet<Models.DeactivatedEmployeeDetails> Employees { get; set; }
         public DbSet<Models.Teams> Teams { get; set; }
         public DbSet<Models.ManagerApprovalStatus> ManagerApprovalStatus { get; set; }
+        public DbSet<Models.ActivationWorkflowModel> ActivationWorkflow { get; set; }
     }
 }

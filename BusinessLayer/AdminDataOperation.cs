@@ -108,11 +108,17 @@ namespace EmployeeDeactivation.BusinessLayer
             return employeeDetails;
         }
 
-        public List<DeactivatedEmployeeDetails> Customers()
+        public List<DeactivatedEmployeeDetails> Customers()//Refactoring
         {
             List<DeactivatedEmployeeDetails> customers = (from customer in this._context.Employees.Take(30000)select customer).ToList();
             return customers;
         }
-        
+
+        public List<ActivationWorkflowModel> ActivationEmployeeData()
+        {
+            List<ActivationWorkflowModel> activationEmployeeData = (from activationEmployee in this._context.ActivationWorkflow.Take(30000) select activationEmployee).ToList();
+            return activationEmployeeData;
+        }
+
     }   
 }
