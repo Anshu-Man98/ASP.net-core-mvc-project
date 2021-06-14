@@ -13,7 +13,7 @@ namespace EmployeeDeactivation.Data
         {
             Database.EnsureCreated();
         }
-        public DbSet<Models.Employee> Employee { get; set; }
+        public DbSet<Models.DeactivatedEmployeeDetails> Employees { get; set; }
         public DbSet<Models.Teams> Teams { get; set; }
     }
 }

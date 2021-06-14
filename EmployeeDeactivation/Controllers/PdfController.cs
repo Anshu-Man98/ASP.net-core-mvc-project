@@ -5,45 +5,47 @@ using System.Linq;
 using System.Threading.Tasks;
 using EmployeeDeactivation.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Syncfusion.Pdf;
+using System.Drawing;
+using Syncfusion.Pdf.Graphics;
 using Syncfusion.Pdf.Parsing;
+using System.Net.Mail;
+using EmployeeDeactivation.Models;
+using System.Net;
 
 namespace EmployeeDeactivation.Controllers
 {
+
     public class PdfController : Controller
     {
-        private readonly IEmployeeDataOperations _employeeDataOperation;
+        private readonly IPdfDataOperation _pdfDataOperation;
 
-        public PdfController(IEmployeeDataOperations employeeDataOperation)
+        public PdfController(IPdfDataOperation pdfDataOperation)
         {
-            _employeeDataOperation = employeeDataOperation;
+            _pdfDataOperation = pdfDataOperation;
         }
+        [HttpGet]
+        [Route("Pdf/Index")]
+        public IActionResult Index(string GId)
+        {
+           var bytes = _pdfDataOperation.FillPdfForm(GId);
+           return Json("data:application/pdf;base64," + Convert.ToBase64String(bytes));
+        }
+
+
         [HttpPost]
-        public string Index(string gId)
+        [Route("Pdf/PdfAttachment")]
+        public void PdfAttachment(string memoryStream,string employeeName, string teamName)
         {
-            var employeeData =_employeeDataOperation.RetrieveEmployeeDataBasedOnGid("G12");
-            //Load the PDF document
-            FileStream docStream = new FileStream("EmployeeDeAct.pdf", FileMode.Open, FileAccess.Read);
-            PdfLoadedDocument loadedDocument = new PdfLoadedDocument(docStream);
-            //Loads the form
-            PdfLoadedForm form = loadedDocument.Form;
-            //Fills the textbox field by using index
-            (form.Fields[0] as PdfLoadedTextBoxField).Text = employeeData.Firstname;
-
-            MemoryStream stream = new MemoryStream();
-            loadedDocument.Save(stream);
-            //If the position is not set to '0' then the PDF will be empty.
-            stream.Position = 0;
-            //Close the document.
-            loadedDocument.Close(true);
-            //Defining the ContentType for pdf file.
-            string contentType = "application/pdf";
-            //Define the file name.
-            string fileName = "output.pdf";
-            //Creates a FileContentResult object by using the file contents, content type, and file name.
-            byte[] bytes = stream.ToArray();
-            return "data:application/pdf;base64," + Convert.ToBase64String(bytes);
-
-
+            _pdfDataOperation.SendPdfAsEmailAttachment( memoryStream,  employeeName, teamName);
         }
+        [HttpGet]
+        [Route("Pdf/SendReminder")]
+        public void SendReminder()
+        {
+            _pdfDataOperation.SendReminderEmail();
+        }
+
+
     }
 }

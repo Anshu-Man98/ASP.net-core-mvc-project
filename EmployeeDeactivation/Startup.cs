@@ -14,11 +14,17 @@ using EmployeeDeactivation.Models;
 using EmployeeDeactivation.Interface;
 using EmployeeDeactivation.BusinessLayer;
 using EmployeeDeactivation.Data;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace EmployeeDeactivation
 {
     public class Startup
     {
+        private IPdfDataOperation _pdfDataOperation;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,16 +44,42 @@ namespace EmployeeDeactivation
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddAuthentication(AzureADDefaults.AuthenticationScheme).AddAzureAD(options => Configuration.Bind("AzureAd", options)).AddCookie();
 
             services.AddDbContext<EmployeeDeactivationContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("EmployeeDeactivationContext")));
            
-            services.AddScoped<IEmployeeDataOperations, EmployeeDataOperations>();
+            services.AddScoped<IEmployeeDataOperation, EmployeeDataOperation>();
+            services.AddScoped<IPdfDataOperation, PdfDataOperation>();
+            services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
+             {
+                 options.Authority = options.Authority + "/v2.0/";
+                 options.TokenValidationParameters.ValidateIssuer = false;
+                 //options.RequireHttpsMetadata = true;
+             });
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("Manager", policyBuilder => policyBuilder.RequireClaim("groups", "3b080549-368c-4755-8fff-599d311fcb79"));
+            //});
+
+
+            services.AddMvc(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+
+                options.Filters.Add(new AuthorizeFilter(policy));
+
+
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
         }
 
+        
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env )
         {
             if (env.IsDevelopment())
             {
@@ -61,6 +93,7 @@ namespace EmployeeDeactivation
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
 
             app.UseMvc(
